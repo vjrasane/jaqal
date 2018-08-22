@@ -1,0 +1,16 @@
+{
+  "humans": {
+    "name" : "*",
+    "age" : "*",
+    "items" : {
+      "name" : "*"
+    },
+    "?" : {
+      "age" : "?",
+      "eye-color" : "!? || ?",
+      "school" : {
+        "level" : "~ elem || 'university'    "
+      }
+    }
+  }
+}

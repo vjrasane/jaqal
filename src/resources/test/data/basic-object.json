@@ -1,0 +1,50 @@
+{
+  "humans": [
+    {
+      "id": 1000,
+      "name": "Josh",
+      "height": 2,
+      "age": 12,
+      "eye-color" : "blue",
+      "school" : {
+        "level" : "elementary"
+      },
+      "items": [
+        {
+          "type": "vehicle",
+          "name": "airplane",
+          "features": ["airborne", "fuel powered", {
+						"name" : "electronics",
+						"type":"technology"
+					}]
+        },
+        {
+          "type": "drink",
+          "name": "coffee"
+        }
+      ],
+      "languages": ["german", "english"]
+    },
+    {
+      "id": 1002,
+      "name": "Helen",
+      "height": 1,
+      "age": 25,
+      "school" : {
+        "level" : "university"
+      },
+      "items": [
+        {
+          "type": "drink",
+          "name": "beer"
+        },
+        {
+          "type": "vehicle",
+          "name": "helicopter",
+          "features": ["airborne", "fuel powered"]
+        }
+      ],
+      "languages": ["japanese", "english"]
+    }
+  ]
+}
