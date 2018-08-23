@@ -10,6 +10,9 @@ function isString (value) {
   return value && typeof value === 'string';
 }
 
+const isFunction = obj => !!(obj && obj.constructor && obj.call && obj.apply);
+const isNull = obj => obj === null || obj === undefined;
+
 const QUOTED_ARGS_MATCHER = /"[^"]+"|'[^']+'|\S+/g;
 const QUOTE_MATCHER = /^[']+|[']+$/g;
 
@@ -33,4 +36,14 @@ const isEmpty = obj => {
   return Object.keys(obj).length === 0;
 };
 
-export { isArray, isObject, isString, parseArgs, first, mapObj, isEmpty };
+export {
+  isArray,
+  isObject,
+  isString,
+  parseArgs,
+  first,
+  mapObj,
+  isEmpty,
+  isNull,
+  isFunction
+};

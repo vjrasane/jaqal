@@ -1,0 +1,10 @@
+{
+  "include": "*",
+  "array": {},
+  "object": {
+    "include": "*",
+    "subobject": {
+      "include": "*"
+    }
+  }
+}

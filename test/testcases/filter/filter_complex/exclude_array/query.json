@@ -1,0 +1,9 @@
+{
+  "include": "*",
+  "object": {
+    "include": "*",
+    "subobject": {
+      "include": "*"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "id" : true,
+  "type" : true,
+  "description" : true,
+  "inexistent": false
+}

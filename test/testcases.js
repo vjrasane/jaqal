@@ -1,37 +1,40 @@
 import filter from '../src/filter';
-// import data from '../src/resources/test/data/basic-object.json';
-// import query from '../src/resources/test/queries/basic-single-query.json';
+
 import { assert } from 'chai';
 import { isEqual } from 'lodash';
-// import { isEmpty } from '../src/utils';
 
 import requireDir from 'require-dir';
 
-const createTest = (name, files) => {
+const createTest = (name, files, parentData) => {
   const query = files['query'];
-  const data = files['data'];
+  const data = 'data' in files ? files['data'] : parentData;
   const expected = files['expected'];
   it(name, () => {
     const result = filter(data, query);
     assert(
       isEqual(expected, result),
-      'expected: ' + JSON.stringify(expected) + '\n received: ' + JSON.stringify(result)
+      'expected: ' +
+        JSON.stringify(expected) +
+        '\n received: ' +
+        JSON.stringify(result)
     );
   });
 };
 
-const createSuite = (name, dir) => {
+const createSuite = (name, dir, parentData) => {
+  const data = 'data' in dir ? dir['data'] : parentData;
   describe(name, () => {
-    Object.keys(dir).forEach(n => createTests(n, dir[n]));
+    Object.keys(dir)
+      .filter(n => !['data', 'query', 'expected'].includes(n))
+      .forEach(n => createTests(n, dir[n], data));
   });
 };
 
-const createTests = (dirname, dir) => {
-  const subdirnames = Object.keys(dir);
-  if (subdirnames.includes('query')) {
-    createTest(dirname, dir);
+const createTests = (dirname, dir, data) => {
+  if ('query' in dir) {
+    createTest(dirname, dir, data);
   } else {
-    createSuite(dirname, dir);
+    createSuite(dirname, dir, data);
   }
 };
 

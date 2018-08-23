@@ -1,0 +1,12 @@
+[{
+  "include" : "0",
+  "exclude" : "1"
+},
+{
+  "include" : "2",
+  "exclude" : "3"
+},
+{
+  "include" : "4",
+  "exclude" : "5"
+}]

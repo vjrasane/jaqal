@@ -1,0 +1,8 @@
+{
+  "id" : 101,
+  "type" : "object",
+  "description" : "test object",
+  "some" : "excess",
+  "fields" : "here",
+  "include" : "this"
+}

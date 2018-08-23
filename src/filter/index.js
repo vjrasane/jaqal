@@ -3,7 +3,9 @@ import {
   isObject,
   isArray,
   isString,
+  isFunction,
   parseArgs,
+  isNull,
   mapObj
 } from '../utils';
 
@@ -46,8 +48,8 @@ const getExpressions = args => {
 };
 
 const getFieldValue = (data, query) => {
-  if (query === '*') {
-    return data;
+  if (isFunction(query)) {
+    return query(data);
   } else {
     return applyQuery(data, query);
   }
@@ -67,11 +69,10 @@ const filterObj = (obj, query) => {
 
   const keys = Object.keys(query).filter(k => k !== '?');
   keys.forEach(k => {
-    if (k in obj) {
-      const queryField = query[k];
-      const field = obj[k];
-      result[k] = getFieldValue(field, queryField);
-    }
+    const queryField = query[k];
+    const field = obj[k];
+    const value = getFieldValue(field, queryField);
+    if (!isNull(value)) result[k] = value;
   });
 
   return result;
@@ -121,6 +122,18 @@ const prepareCondition = cond => {
   return obj => Object.keys(cond).every(c => comparators[c](obj[c]));
 };
 
+const masks = {
+  '*': v => v,
+  '?': v => !!v,
+  '!?': v => !v,
+  '!': v => !v,
+};
+
+const prepareMask = mask => {
+  if (mask in masks) return masks[mask];
+  return v => '';
+};
+
 const prepareQuery = query => {
   const prepared = {};
   const cond = getCondition(query);
@@ -128,11 +141,12 @@ const prepareQuery = query => {
   if (cond) {
     prepared['?'] = prepareCondition(cond);
   }
+
   Object.keys(query)
     .filter(k => k !== '?')
     .forEach(k => {
       const field = query[k];
-      prepared[k] = isObject(field) ? prepareQuery(field) : field;
+      prepared[k] = isObject(field) ? prepareQuery(field) : prepareMask(field);
     });
 
   return prepared;
