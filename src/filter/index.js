@@ -4,8 +4,10 @@ import {
   isArray,
   isString,
   isFunction,
+  isNumber,
   parseArgs,
   isNull,
+  isBoolean,
   mapObj
 } from '../utils';
 
@@ -66,7 +68,6 @@ const isIncluded = (data, query) => {
 
 const filterObj = (obj, query) => {
   const result = {};
-
   const keys = Object.keys(query).filter(k => k !== '?');
   keys.forEach(k => {
     const queryField = query[k];
@@ -109,6 +110,8 @@ const prepareExpressions = args => {
 const prepareComparator = cond => {
   if (isString(cond)) {
     return prepareExpressions(parseArgs(cond));
+  } else if (isNumber(cond) || isBoolean(cond)) {
+    return v => v === cond;
   } else if (isArray(cond)) {
     // TODO: array condition
   } else if (isObject(cond)) {
@@ -131,7 +134,7 @@ const masks = {
 
 const prepareMask = mask => {
   if (mask in masks) return masks[mask];
-  return v => '';
+  return v => null;
 };
 
 const prepareQuery = query => {

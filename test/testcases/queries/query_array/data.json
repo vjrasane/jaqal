@@ -1,0 +1,22 @@
+[
+  {
+    "id" : 0,
+    "include" : true
+  },
+  {
+    "id" : 1,
+    "include" : false
+  },
+  {
+    "id" : 2,
+    "extra" : false
+  },
+  {
+    "id" : 3,
+    "include" : true
+  },
+  {
+    "id" : 4,
+    "extra" : true
+  }
+]
