@@ -19,7 +19,9 @@
     "navigator": false,
     "window": false,
     "process": true,
-    "console": true
+    "console": true,
+    "describe": true,
+    "it": true
   },
 
   "rules": {
@@ -79,7 +81,7 @@
     "no-const-assign": "error",
     "no-constant-condition": ["error", { "checkLoops": false }],
     "no-control-regex": "error",
-    "no-console" : "warn",
+    "no-console": "warn",
     "no-debugger": "error",
     "no-delete-var": "error",
     "no-dupe-args": "error",

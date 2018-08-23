@@ -124,7 +124,6 @@ const prepareCondition = cond => {
 const prepareQuery = query => {
   const prepared = {};
   const cond = getCondition(query);
-  console.log('asds');
 
   if (cond) {
     prepared['?'] = prepareCondition(cond);
