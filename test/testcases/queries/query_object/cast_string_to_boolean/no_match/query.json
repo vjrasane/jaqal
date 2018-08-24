@@ -1,0 +1,7 @@
+{
+  "id" : "*",
+  "?" : {
+    "boolean" : "false",
+    "another" : "true"
+  }
+}

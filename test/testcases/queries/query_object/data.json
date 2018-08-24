@@ -4,5 +4,7 @@
   "description" : "test object",
   "some" : "excess",
   "fields" : "here",
-  "include" : "this"
+  "include" : "this",
+  "boolean" : true,
+  "another" : false
 }

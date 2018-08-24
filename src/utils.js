@@ -11,7 +11,7 @@ function isString (value) {
 }
 
 const isFunction = obj => !!(obj && obj.constructor && obj.call && obj.apply);
-const isBoolean = obj => obj && typeof obj === 'boolean';
+const isBoolean = obj => obj !== null && obj !== undefined && typeof obj === 'boolean';
 const isNumber = obj => obj && typeof obj === 'number';
 const isNull = obj => obj === null || obj === undefined;
 
@@ -38,6 +38,12 @@ const isEmpty = obj => {
   return Object.keys(obj).length === 0;
 };
 
+const toBoolean = obj => {
+  if (obj === 'true' || obj === true) return true;
+  if (obj === 'false' || obj === false) return false;
+  return null;
+};
+
 export {
   isArray,
   isObject,
@@ -49,5 +55,6 @@ export {
   isNull,
   isNumber,
   isBoolean,
+  toBoolean,
   isFunction
 };

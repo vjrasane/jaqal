@@ -5,11 +5,14 @@ import { isEqual } from 'lodash';
 
 import requireDir from 'require-dir';
 
+const wrapper = (name, it) =>
+  name.endsWith('#skip') ? it.skip : name.endsWith('#only') ? it.only : it;
+
 const createTest = (name, files, parentData) => {
   const query = files['query'];
   const data = 'data' in files ? files['data'] : parentData;
   const expected = files['expected'];
-  it(name, () => {
+  wrapper(name, it)(name, () => {
     const result = filter(data, query);
     assert(
       isEqual(expected, result),
@@ -23,7 +26,7 @@ const createTest = (name, files, parentData) => {
 
 const createSuite = (name, dir, parentData) => {
   const data = 'data' in dir ? dir['data'] : parentData;
-  describe(name, () => {
+  wrapper(name, describe)(name, () => {
     Object.keys(dir)
       .filter(n => !['data', 'query', 'expected'].includes(n))
       .forEach(n => createTests(n, dir[n], data));
@@ -38,4 +41,4 @@ const createTests = (dirname, dir, data) => {
   }
 };
 
-createTests('testcases', requireDir('./testcases', { recurse: true, }));
+createTests('testcases', requireDir('./testcases', { recurse: true }));
