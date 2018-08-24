@@ -21,7 +21,9 @@
     "process": true,
     "console": true,
     "describe": true,
-    "it": true
+    "it": true,
+    "module": true,
+    "__dirname": true
   },
 
   "rules": {

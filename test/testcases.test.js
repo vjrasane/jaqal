@@ -3,7 +3,8 @@ import filter from '../src/filter';
 import { assert } from 'chai';
 import { isEqual } from 'lodash';
 
-import requireDir from 'require-dir';
+import path from 'path';
+import requireDir from 'require-directory';
 
 const wrapper = (name, it) =>
   name.endsWith('#skip') ? it.skip : name.endsWith('#only') ? it.only : it;
@@ -41,4 +42,6 @@ const createTests = (dirname, dir, data) => {
   }
 };
 
-createTests('testcases', requireDir('./testcases', { recurse: true }));
+const dir = requireDir(module, path.join(__dirname, './testcases'));
+
+createTests('testcases', dir);
