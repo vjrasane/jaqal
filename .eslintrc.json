@@ -23,6 +23,7 @@
     "describe": true,
     "it": true,
     "module": true,
+    "expect": true,
     "__dirname": true
   },
 

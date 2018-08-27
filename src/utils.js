@@ -34,10 +34,6 @@ const mapObj = (obj, mapper) => {
   return mapped;
 };
 
-const isEmpty = obj => {
-  return Object.keys(obj).length === 0;
-};
-
 const toBoolean = obj => {
   if (obj === 'true' || obj === true) return true;
   if (obj === 'false' || obj === false) return false;
@@ -51,7 +47,6 @@ export {
   parseArgs,
   first,
   mapObj,
-  isEmpty,
   isNull,
   isNumber,
   isBoolean,

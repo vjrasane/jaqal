@@ -1,8 +1,5 @@
 import filter from '../src/filter';
 
-import { assert } from 'chai';
-import { isEqual } from 'lodash';
-
 import path from 'path';
 import requireDir from 'require-directory';
 
@@ -15,13 +12,14 @@ const createTest = (name, files, parentData) => {
   const expected = files['expected'];
   wrapper(name, it)(name, () => {
     const result = filter(data, query);
-    assert(
-      isEqual(expected, result),
-      'expected: ' +
-        JSON.stringify(expected) +
-        '\n received: ' +
-        JSON.stringify(result)
-    );
+    expect(result).toEqual(expected);
+    // assert(
+    //   isEqual(expected, result),
+    //   'expected: ' +
+    //     JSON.stringify(expected) +
+    //     '\n received: ' +
+    //     JSON.stringify(result)
+    // );
   });
 };
 
