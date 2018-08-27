@@ -18,9 +18,8 @@ const operators = {
   '<=': (a, b) => a <= b,
   '>=': (a, b) => a >= b,
   '=': (a, b) => a === b,
-  '?': a => !!a,
-  '!?': a => !a,
-  '!': a => !a,
+  '?': a => !isNull(a),
+  '!?': a => isNull(a),
   '~': (a, b) => a && a.includes(b)
 };
 
@@ -139,7 +138,7 @@ const prepareQuery = query => {
     prepared['?'] = prepareCondition(cond);
   }
 
-  Object.keys(query)
+  Object.keys(query || {})
     .filter(k => k !== '?')
     .forEach(k => {
       const field = query[k];

@@ -1,0 +1,17 @@
+{
+  "id" : 101,
+  "type" : "object",
+  "description" : "test object",
+  "some" : "excess",
+  "fields" : "here",
+  "include" : "this",
+  "boolean" : true,
+  "another" : false,
+  "nested" : {
+    "id" : 102,
+    "some": "excess",
+    "fields" :  "as well",
+    "boolean" : false,
+    "another" : true
+  }
+}
