@@ -40,6 +40,10 @@ const toBoolean = obj => {
   return null;
 };
 
+const getCondition = query => {
+  return isObject(query) ? query['?'] : null;
+};
+
 export {
   isArray,
   isObject,
@@ -51,5 +55,6 @@ export {
   isNumber,
   isBoolean,
   toBoolean,
-  isFunction
+  isFunction,
+  getCondition
 };
