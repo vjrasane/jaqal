@@ -11,8 +11,9 @@ function isString (value) {
 }
 
 const isFunction = obj => !!(obj && obj.constructor && obj.call && obj.apply);
-const isBoolean = obj => obj !== null && obj !== undefined && typeof obj === 'boolean';
-const isNumber = obj => obj && typeof obj === 'number';
+const isBoolean = obj =>
+  obj !== null && obj !== undefined && typeof obj === 'boolean';
+const isNumber = obj => !isNaN(obj);
 const isNull = obj => obj === null || obj === undefined;
 
 const QUOTED_ARGS_MATCHER = /"[^"]+"|'[^']+'|\S+/g;
@@ -25,6 +26,15 @@ const parseArgs = str =>
     .map(s => s.replace(QUOTE_MATCHER, ''));
 
 const first = array => array[0];
+const last = array => array[array.length - 1];
+
+const mapArray = (array, mapper) => {
+  const mapped = {};
+  array.forEach(k => {
+    mapped[k] = mapper(k);
+  });
+  return mapped;
+};
 
 const mapObj = (obj, mapper) => {
   const mapped = {};
@@ -50,7 +60,9 @@ export {
   isString,
   parseArgs,
   first,
+  last,
   mapObj,
+  mapArray,
   isNull,
   isNumber,
   isBoolean,
