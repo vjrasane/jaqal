@@ -16,14 +16,11 @@ const isBoolean = obj =>
 const isNumber = obj => !isNaN(obj);
 const isNull = obj => obj === null || obj === undefined;
 
-const QUOTED_ARGS_MATCHER = /"[^"]+"|'[^']+'|\S+/g;
-const QUOTE_MATCHER = /^[']+|[']+$/g;
-
-const parseArgs = str =>
-  str
-    .trim()
-    .match(QUOTED_ARGS_MATCHER)
-    .map(s => s.replace(QUOTE_MATCHER, ''));
+// const QUOTED_ARGS_MATCHER = /"[^"]+"|'[^']+'|\S+/g;
+// const QUOTE_MATCHER = /^[']+|[']+$/g;
+const isQuoted = str => str.startsWith("'") && str.endsWith("'");
+const removeQuotes = str => str.replace(/^'/, '').replace(/'$/, '');
+const parseArgs = str => str.match(/\S+|"[^"]+"/g);
 
 const first = array => array[0];
 const last = array => array[array.length - 1];
@@ -58,6 +55,8 @@ export {
   isArray,
   isObject,
   isString,
+  isQuoted,
+  removeQuotes,
   parseArgs,
   first,
   last,

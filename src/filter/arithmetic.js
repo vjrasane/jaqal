@@ -1,127 +1,71 @@
-import { isNumber, last } from '../utils';
-
-// const valuePlaceholder = 'VALUE';
-
-// const comparators = ['>=', '<=', '<', '>', '=='];
-// const logicals = ['&&', '||'];
-// const parentheseses = ['(', ')'];
-// const operators = ['^', '*', '%', '/', '+', '-'];
-
-// const replacements = {
-//   '=': '==',
-//   '&&': 'and',
-//   '\\|\\|': 'or',
-//   '\\@': valuePlaceholder
-// };
-
-// const spacing = {
-//   '\\)': ' )',
-//   '\\(': '( ',
-//   ...mapArray(comparators, c => ' ' + c + ' ')
-// };
-
-// const replace = str =>
-//   Object.keys(replacements).reduce(
-//     (str, rep) => str.replace(new RegExp(rep, 'g'), replacements[rep]),
-//     str
-//   );
-
-// const space = str =>
-//   Object.keys(spacing).reduce(
-//     (str, sp) => str.replace(new RegExp(sp, 'g'), spacing[sp]),
-//     str
-//   );
-
-// const injectValue = split => {
-//   let result = [...split];
-//   while (
-//     result.find((part, index) => {
-//       if (comparators.includes(part)) {
-//         if (
-//           index === 0 ||
-//           logicals.concat(parentheseses).includes(result[index - 1])
-//         ) {
-//           result.splice(index, 0, valuePlaceholder);
-//           return true;
-//         }
-//       }
-//       return false;
-//     })
-//   );
-//   return result;
-// };
-
-// const preprocess = str => {
-//   const replaced = replace(str);
-//   const spaced = space(replaced);
-//   const split = spaced.split(' ').filter(s => s && s.length > 0);
-//   return injectValue(split).join(' ');
-// };
+import { parseArgs, removeQuotes, isNumber, last, isFunction } from '../utils';
 
 const logicals = {
   '&&': {
     precedence: 0,
-    apply: (a, b) => a && b
+    func: (a, b) => a && b
   },
   '||': {
     precedence: 0,
-    apply: (a, b) => a || b
+    func: (a, b) => a || b
   }
 };
 
 const comparators = {
   '<': {
     precedence: 1,
-    apply: (a, b) => a < b
+    func: (a, b) => a < b
   },
   '>': {
     precedence: 1,
-    apply: (a, b) => a > b
+    func: (a, b) => a > b
   },
   '<=': {
     precedence: 1,
-    apply: (a, b) => a <= b
+    func: (a, b) => a <= b
   },
   '>=': {
     precedence: 1,
-    apply: (a, b) => a >= b
+    func: (a, b) => a >= b
   },
   '==': {
     precedence: 1,
-    apply: (a, b) => a === b
+    func: (a, b) => a === b
   },
   '=': {
     precedence: 1,
-    apply: (a, b) => a === b
+    func: (a, b) => a === b
   }
 };
 
 const arithmetic = {
   '+': {
     precedence: 2,
-    apply: (a, b) => a + b
+    func: (a, b) => a + b
   },
   '-': {
     precedence: 2,
-    apply: (a, b) => a - b
+    func: (a, b) => a - b
   },
   '*': {
     precedence: 3,
-    apply: (a, b) => a * b
+    func: (a, b) => a * b
   },
   '/': {
     precedence: 3,
-    apply: (a, b) => a / b
+    func: (a, b) => a / b
   },
   '%': {
     precedence: 3,
-    apply: (a, b) => a % b
+    func: (a, b) => a % b
   },
   '^': {
     precedence: 4,
-    apply: (a, b) => a ^ b
+    func: (a, b) => Math.pow(a, b)
   }
 };
+
+const parentheses = ['(', ')'];
 
 const operators = {
   ...arithmetic,
@@ -129,35 +73,87 @@ const operators = {
   ...logicals
 };
 
-const precedence = (a, b) =>
-  !(b in operators) ||
-  (a in operators && operators[a].precedence > operators[b].precedence);
+const precedence = (a, b) => a.precedence > operators[b].precedence;
 
-const apply = (second, first, op) => operators[op].apply(first, second);
+const val = (token, value) =>
+  token === '@' ? value : isFunction(token) ? token(value) : token;
+
+const apply = (op, values) => {
+  const args = [...Array(op.func.length).keys()].map(a => values.pop()).reverse();
+  return v => op.func.apply(null, args.map(a => val(a, v)));
+};
+
+const injectValues = split => {
+  const injected = [...split];
+  if (injected.length === 1) {
+    return ['@', '==', ...injected];
+  }
+
+  while (
+    injected.find((part, index) => {
+      if (part in comparators) {
+        if (
+          index === 0 ||
+          parentheses.includes(injected[index - 1]) ||
+          injected[index - 1] in logicals
+        ) {
+          injected.splice(index, 0, '@');
+        }
+      }
+      return false;
+    })
+  ) {}
+  return injected;
+};
+
+const functions = {
+  abs: v => Math.abs(v),
+  length: v => v.length
+};
+
+const tokenize = str =>
+  injectValues(
+    parseArgs(str)
+      .filter(s => s && s.length > 0)
+      .map(s => removeQuotes(s))
+  );
 
 const evaluate = str => {
   const ops = [];
   const values = [];
-  const tokens = str.split(' ').filter(s => s && s.length > 0);
+  const tokens = tokenize(str);
 
   tokens.forEach(t => {
     if (t === '(') ops.push(t);
     else if (isNumber(Number(t))) values.push(Number(t));
+    else if (t === '@') values.push(t);
     else if (t === ')') {
       while (ops.length > 0 && last(ops) !== '(') {
-        values.push(apply(values.pop(), values.pop(), ops.pop()));
+        values.push(apply(ops.pop(), values));
       }
       ops.pop();
-    } else {
+    } else if (t in operators) {
       while (ops.length > 0 && precedence(last(ops), t)) {
-        values.push(apply(values.pop(), values.pop(), ops.pop()));
+        values.push(apply(ops.pop(), values));
       }
-      ops.push(t);
+      ops.push(operators[t]);
+    } else if (t.endsWith('(')) {
+      ops.push('(');
+      // Function call
+      const name = t.substring(0, t.length - 1);
+      ops.push({
+        precedence: 5,
+        func: functions[name]
+      });
+    } else if (t === ',') { // Ignore commas
+    } else {
+      // String literal
+      values.push(t);
     }
   });
 
   while (ops.length > 0) {
-    values.push(apply(values.pop(), values.pop(), ops.pop()));
+    values.push(apply(ops.pop(), values));
   }
 
   return values.pop();
